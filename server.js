@@ -25,15 +25,15 @@ const PORT = process.env.PORT || 3002;
 // **** ENDPOINTS ****
 
 // *** Base endpoint - proof of life
+
+app.get('/', (request, response) => {
+  response.status(200).send('Welcome to my server');
+});
 // ** 1st arg - endpoint in quotes
 // ** 2nd arg - callback which will execute when someone hits that point
 
 // *** Callback function - 2 parameters: request, response (req,res)
 
-
-app.get('/', (request, response) => {
-  response.status(200).send('Welcome to my server');
-});
 
 // ****** DEFINE WEATHER ENDPOINT WITH THE FOLLOWING QUERIES - lat, lon, searchQuery
 
@@ -105,9 +105,9 @@ class Movies {
 
 // **** Forecast CLASS TO GROOM BULKY DATA ****
 class FORECAST{
-  constructor(dayobj){
-    this.date =
-    this.description =
+  constructor(dayObj){
+    this.date = dayObj.date;
+    this.description =dayObj.description;
   }
 }
 
