@@ -7,11 +7,11 @@ let cache = {};
 
 async function getMovies(request, response, next) {
   try {
-
+    console.log('here',request.query.searchQuery);
     let cityName = request.query.searchQuery;
 
     // **** CREATE MY KEY *****
-    let key = `${cityName}Movie`; // ** key = moviePhoto  cache[moviePhoto]
+    let key = `${cityName} Movie`; // ** key = moviePhoto  cache[moviePhoto]
 
     // **** IF IT EXISTS AND IT IS IN A VALID TIME - SEND THAT DATA
     if(cache[key] && (Date.now() - cache[key].timeStamp) < 3000000){
@@ -22,8 +22,8 @@ async function getMovies(request, response, next) {
     } else {
 
       console.log('cache missed -- no images present');
-
-      let url = `https://localhost/search/getMovie?client_id=${process.env.UNSPLASH_API_KEY}&query=${cityName}`;
+      let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&language=en-US&query=${cityName}&page=1&include_adult=false`;
+      // let url = `https://localhost/search/getMovie?client_id=${process.env.MOVIE_API_KEY}&query=${cityName}`;
       let moviesResults = await axios.get(url);
       let groomedData = moviesResults.data.results.map(movieObj => new Movies(movieObj));
 

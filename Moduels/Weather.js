@@ -4,12 +4,11 @@ const axios = require('axios');
 let cache = require('./cache.js');
 
 
-const weather={  }
- weather.getWeather= async(req, res, next) => {
+async function getWeather(req, res, next) {
   let lat = req.query.lat;
   let lon = req.query.lon;
   let cityName = req.query.searchQuery;
-
+  console.log(lat, lon);
   const key = 'weather-' + lat + lon;
   const url = `http://api.weatherbit.io/v2.0/forecast/daily/?key=${process.env.WEATHER_API_KEY}&lang=en&lat=${lat}&lon=${lon}&days=5`;
 
@@ -19,14 +18,19 @@ const weather={  }
     console.log('Cache miss');
     cache[key] = {};
     cache[key].timestamp = Date.now();
-    cache[key].data = axios.get(url)
-      .then(response => parseWeather(response.data));
-  }
+    let forecastData = await axios.get(url);
+    // .then(response => parseWeather(response.data));
+    let weatherData = forecastData.data.data.map(dayObj => new Weather(dayObj));
 
-  return cache[key].data;
-};
+    cache[key] = {
+      data: weatherData,
+    };
+    res.status(200).send(weatherData);
+  }
+}
 
 function parseWeather(weatherData) {
+  console.log('here');
   try {
     const weatherSummaries = weatherData.data.map(day => {
       return new Weather(day);
@@ -44,5 +48,5 @@ class Weather {
   }
 }
 
-module.expoorts = weather;
+module.exports = getWeather;
 
